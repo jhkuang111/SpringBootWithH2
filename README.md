@@ -42,3 +42,25 @@ Public class Player {
 
 }
 ```
+### Add service and controller layer for handling different APIs
+1. Go to http://localhost:8080/players with POST request, using Postman, and input the following data in request body in JSON format
+```
+{
+  "name": "Federer",
+  "nationality": "Switzerland",
+  "birthDate": "22-11-1984",
+  "titles": 151
+}
+```
+2. Call GET request to http://localhost:8080/players to retrieve all players to verify that data has been inserted
+```
+[
+    {
+        "id": 1,
+        "name": "Federer",
+        "nationality": "Switzerland",
+        "birthDate": "22-11-1984",
+        "titles": 151
+    }
+]
+```
