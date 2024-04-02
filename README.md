@@ -2,7 +2,7 @@
 
 ### Download template project code from Spring Initializer
 1. Go to [spring initializr](https://start.spring.io/)
-2. Choose **Maven**, **Java**, **3.2.4** (by default), **Jar**, and **17**
+2. Choose **Maven**, **Java**, **3.2.4** (by default), **Jar**, and **17**(JDK version)
 3. Go to Dependencies, add **Spring Web**, **Spring Data JPA**, **H2 Database**
 4. Click **Generate**, unzip and then the load the project from Intellij and run to make sure server is running
 
@@ -64,3 +64,24 @@ Public class Player {
     }
 ]
 ```
+Above is run in Intellij, other option is to use Docker
+
+### Dockerize the Spring boot app
+1. cd into the project directory, build the jar file by running `./mvnw install` with Maven
+2. Create a `Dockerfile` with following cmd
+```
+FROM openjdk:17-oracle
+VOLUME /tmp
+COPY target/*.jar app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
+```
+3. Build an image using following Docker cmd
+```
+docker build -t CONTAINER_IMAGE_NAME .
+```
+4. Check the built image under Local Images in Docker Desktop
+5. Run the image in a container using following cmd
+```
+docker run -p 8080:8080 CONTAINER_IMAGE_NAME
+```
+Reference: [Spring Boot Docker](https://spring.io/guides/topicals/spring-boot-docker)
