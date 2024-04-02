@@ -26,7 +26,7 @@ public class PlayerService {
     public Player getPlayerById(int id) {
         Optional<Player> player = playerRepo.findById(id);
         if (player.isEmpty()) {
-            throw new RuntimeException("Player with id {"+ id +"} not found");
+            throw new PlayerNotFoundException("Player with id {"+ id +"} not found");
         }
         return player.get();
     }
