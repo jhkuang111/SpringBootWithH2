@@ -32,3 +32,13 @@ VALUES(1, 'Djokovic', 'Serbia', '1987-05-22', 81);
 ```
 4. Go to http://localhost:8080/h2-console and make sure **JDBC URL** has the name of `spring.datasource.url` from above
 5. Run `Select * from Player;` in the console to see that data has been inserted into the table
+
+### Instead of schema SQL file, use JPA to create table (Hibernate under the hood)
+1. Different annotations like **@Entity**, **@Column**, **@Table**, etc.
+```
+@Entity
+@Table(name="Player")
+Public class Player {
+
+}
+```
