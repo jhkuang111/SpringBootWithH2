@@ -1,6 +1,10 @@
 package com.spring.server;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +33,16 @@ public class PlayerService {
             throw new PlayerNotFoundException("Player with id {"+ id +"} not found");
         }
         return player.get();
+    }
+
+    public Page<Player> getPlayersWithPagination(int pageNumber, int pageSize, String sortByAttribute) {
+        Pageable pageable = null;
+        if (sortByAttribute != null) {
+            pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.ASC, sortByAttribute);
+        } else {
+            pageable = PageRequest.of(pageNumber, pageSize);
+        }
+        return playerRepo.findAll(pageable);
     }
 
 }

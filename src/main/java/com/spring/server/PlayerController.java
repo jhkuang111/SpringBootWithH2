@@ -3,6 +3,7 @@ package com.spring.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,5 +38,12 @@ public class PlayerController {
             logger.warn("Player with id {} is not found", id);
         }
         return player;
+    }
+
+    @GetMapping("/players/{pageNumber}/{pageSize}/{sortByAttribute}")
+    public List<Player> getPlayersWithPagination(@PathVariable int pageNumber, @PathVariable int pageSize, @PathVariable String sortByAttribute) {
+        logger.info("PageNumber: {}, PageSize: {}, sort: {}", pageNumber, pageSize, sortByAttribute);
+        Page<Player> pagePlayers = playerService.getPlayersWithPagination(pageNumber, pageSize, sortByAttribute);
+        return pagePlayers.getContent();
     }
 }
