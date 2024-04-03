@@ -82,6 +82,6 @@ docker build -t CONTAINER_IMAGE_NAME .
 4. Check the built image under Local Images in Docker Desktop
 5. Run the image in a container using following cmd
 ```
-docker run -p 8080:8080 CONTAINER_IMAGE_NAME
+docker run -p 8080:8080 --rm --name CONTAINER_NAME CONTAINER_IMAGE_NAME
 ```
 Reference: [Spring Boot Docker](https://spring.io/guides/topicals/spring-boot-docker)
