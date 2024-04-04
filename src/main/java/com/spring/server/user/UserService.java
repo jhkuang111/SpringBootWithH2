@@ -2,6 +2,8 @@ package com.spring.server.user;
 
 import com.spring.server.authentication.AuthenticationService;
 import com.spring.server.authentication.AuthenticationToken;
+import com.spring.server.authentication.MessageStrings;
+import com.spring.server.exception.AuthenticationFailException;
 import com.spring.server.exception.CustomException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +46,26 @@ public class UserService {
         } catch (Exception ex) {
             throw new CustomException(ex.getMessage());
         }
+    }
+
+    public SignInResponseDto signIn(SignInDto signInDto) throws AuthenticationFailException, CustomException {
+        User user = userRepository.findByEmail(signInDto.getEmail());
+        if (Objects.isNull(user)) {
+            throw new AuthenticationFailException("user not present");
+        }
+        try {
+            if (!user.getPassword().equals(hashPassword(signInDto.getPassword()))) {
+                throw new AuthenticationFailException(MessageStrings.WRONG_PASSWORD);
+            }
+        } catch (NoSuchAlgorithmException ex) {
+            logger.error("hashing password failed: ", ex);
+            throw new CustomException(ex.getMessage());
+        }
+        AuthenticationToken token = authenticationService.getToken(user);
+        if (Objects.isNull(token)) {
+            throw new CustomException(MessageStrings.AUTH_TOEKN_NOT_PRESENT);
+        }
+        return new SignInResponseDto("success", token.getToken());
     }
 
     private String hashPassword(String password) throws NoSuchAlgorithmException {
