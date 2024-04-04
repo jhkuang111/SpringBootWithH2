@@ -1,14 +1,12 @@
 package com.spring.server;
 
+import com.spring.server.authentication.AuthenticationService;
+import com.spring.server.exception.AuthenticationFailException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,13 +18,21 @@ public class PlayerController {
     @Autowired
     PlayerService playerService;
 
+    @Autowired
+    AuthenticationService authenticationService;
+
     @GetMapping("/players")
     public List<Player> getAllPlayers() {
         return playerService.getAllPlayers();
     }
 
+    // Should change Player to PlayerDto
+    // Now POST request contains request param "token" /players?token=VALID_TOKENS_STRING
     @PostMapping("/players")
-    public Player addPlayer(@RequestBody Player newPlayer) {
+    public Player addPlayer(@RequestBody Player newPlayer, @RequestParam("token") String token) throws AuthenticationFailException {
+        // User need to sign up and then sign in to get token before allowing to add new player
+        authenticationService.authenticate(token);
+        logger.info("User is authenticated to add new player");
         newPlayer.setId(0);
         return playerService.addPlayer(newPlayer);
     }
