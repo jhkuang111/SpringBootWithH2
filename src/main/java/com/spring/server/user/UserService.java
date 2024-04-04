@@ -1,5 +1,7 @@
 package com.spring.server.user;
 
+import com.spring.server.authentication.AuthenticationService;
+import com.spring.server.authentication.AuthenticationToken;
 import com.spring.server.exception.CustomException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,9 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    AuthenticationService authenticationService;
+
     public SignUpResponseDto signUp(SignupDto signupDto) throws CustomException {
         if (Objects.nonNull(userRepository.findByEmail(signupDto.getEmail()))) {
             throw new CustomException("User already exists");
@@ -33,6 +38,8 @@ public class UserService {
         User user = new User(signupDto.getFirstName(), signupDto.getLastName(), signupDto.getEmail(), encryptedPassword);
         try {
             userRepository.save(user);
+            final AuthenticationToken authenticationToken = new AuthenticationToken(user);
+            authenticationService.saveConfirmationToken(authenticationToken);
             return new SignUpResponseDto("success", "user created successfully");
         } catch (Exception ex) {
             throw new CustomException(ex.getMessage());
