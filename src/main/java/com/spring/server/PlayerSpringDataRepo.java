@@ -1,8 +1,10 @@
 package com.spring.server;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -53,4 +55,8 @@ public interface PlayerSpringDataRepo extends JpaRepository<Player, Integer> {
     List<Player> findByNameOrderByName(String name);
     List<Player> findByNameOrderByNameAsc(String name);
     List<Player> findByNameOrderByNameDesc(String name);
+
+    // Custom method using @Query
+    @Query("SELECT p FROM Player p WHERE p.birthDate >= ?1 and p.birthDate <= ?2")
+    List<Player> fetchPlayersBetweenDate(Date statDate, Date endDate);
 }
