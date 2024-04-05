@@ -2,6 +2,7 @@ package com.spring.server;
 
 import com.spring.server.authentication.AuthenticationService;
 import com.spring.server.exception.AuthenticationFailException;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class PlayerController {
     // Should change Player to PlayerDto
     // Now POST request contains request param "token" /players?token=VALID_TOKENS_STRING
     @PostMapping("/players")
-    public Player addPlayer(@RequestBody Player newPlayer, @RequestParam("token") String token) throws AuthenticationFailException {
+    public Player addPlayer(@RequestBody @Valid Player newPlayer, @RequestParam("token") String token) throws AuthenticationFailException {
         // User need to sign up and then sign in to get token before allowing to add new player
         authenticationService.authenticate(token);
         logger.info("User is authenticated to add new player");
