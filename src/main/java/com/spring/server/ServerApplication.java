@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 @SpringBootApplication
-@EnableConfigurationProperties(ApiCallDto.class)
+@EnableConfigurationProperties(ApiCallDto.class) // This registers the class with the Spring container
 public class ServerApplication implements CommandLineRunner {
 
 	Logger logger = LoggerFactory.getLogger(ServerApplication.class);

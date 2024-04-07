@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
+// @ConfigurationProperties maps to prefix, POJO fields map to other property fields
 @ConfigurationProperties(prefix = "forbes400.billionaire")
 @Validated
 public class ApiCallDto {
@@ -19,11 +20,9 @@ public class ApiCallDto {
     @NotNull
     @NotEmpty
     @URL
-    @Value("${forbes400.billionaire.api}")
     private final String api;
 
     @Positive
-    @Value("${forbes400.billionaire.maxrecord}")
     private final int maxrecord;
 
     public ApiCallDto(@NotNull @NotEmpty @URL String api, @Positive int maxrecord) {
