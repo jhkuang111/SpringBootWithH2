@@ -85,3 +85,48 @@ docker build -t CONTAINER_IMAGE_NAME .
 docker run -p 8080:8080 --rm --name CONTAINER_NAME CONTAINER_IMAGE_NAME
 ```
 Reference: [Spring Boot Docker](https://spring.io/guides/topicals/spring-boot-docker)
+
+### Using RestTemplate to call external API for data 
+This calls external API and parse data and store data into H2 database
+
+### Using Redis to cache data
+Get Redis server running
+```
+redis-server
+```
+Introduce Spring Data Redis framework into `pom.xml`
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+```
+Instantiate RedisTemplate Bean and add some properties in the `application.properties`
+```
+@Bean
+public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory redisFactory) {
+    logger.info("Initiating Redis Template");
+    RedisTemplate<String, String> template = new RedisTemplate<>();
+    template.setConnectionFactory(redisFactory);
+    // Add some specific configuration here. Key serializers, etc.
+    return template;
+}
+```
+```
+spring.data.redis.host=localhost
+spring.data.redis.port=6379
+```
+Once this is done, running the service up for the first time, it will call external API
+```
+INFO 42953 --- [server] [           main] com.spring.server.ServerApplication      : Calling external API for data
+INFO 42953 --- [server] [           main] com.spring.server.ServerApplication      : Retrieved result from API
+INFO 42953 --- [server] [           main] com.spring.server.ServerApplication      : Saving data into H2 database
+INFO 42953 --- [server] [           main] com.spring.server.ServerApplication      : Also saving data into Redis Cache
+INFO 42953 --- [server] [           main] com.spring.server.ServerApplication      : All saving is done...
+```
+Stop the service and restart the service again, without stopping the Redis server
+```
+INFO 42967 --- [server] [           main] com.spring.server.ServerApplication      : Calling REST API for Forbes 400
+INFO 42967 --- [server] [           main] com.spring.server.ServerApplication      : Request data found in Redis Cache, no need to call external API
+```
+Note: this only works from running in Intellij. Running the service in Docker would lead to `Unable to connect Redis`. Need to figure out later
