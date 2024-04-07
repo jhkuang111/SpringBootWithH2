@@ -9,7 +9,7 @@ import java.time.Duration;
 @Component
 public class RestClient {
 
-    private static final int TIME = 3000;
+    private static final int TIME = 10000;
 
     public RestTemplate getRestClient() {
         RestTemplateBuilder builder = new RestTemplateBuilder();
