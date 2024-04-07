@@ -1,5 +1,6 @@
 package com.spring.server;
 
+import com.spring.server.REST.ApiCallDto;
 import com.spring.server.REST.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 @SpringBootApplication
+@EnableConfigurationProperties(ApiCallDto.class)
 public class ServerApplication implements CommandLineRunner {
 
 	Logger logger = LoggerFactory.getLogger(ServerApplication.class);
@@ -23,6 +26,9 @@ public class ServerApplication implements CommandLineRunner {
 
 	@Autowired
 	RestClient restClient;
+
+	@Autowired
+	ApiCallDto apiCallDto;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ServerApplication.class, args);
@@ -38,7 +44,13 @@ public class ServerApplication implements CommandLineRunner {
 
 		RestTemplate restTemplate = restClient.getRestClient();
 		logger.info("Calling REST API for Forbes 400");
-		final ResponseEntity<String> forbes400Entity = restTemplate.getForEntity("https://forbes400.onrender.com/api/forbes400?limit=3", String.class);
-		logger.info(forbes400Entity.getBody());
+		ResponseEntity<String> forbes400Entity = null;
+		try {
+			forbes400Entity = restTemplate.getForEntity(apiCallDto.getApi(), String.class);
+		} catch (Exception ex) {
+			logger.error("Error calling API", ex);
+		}
+        assert forbes400Entity != null;
+        logger.info(forbes400Entity.getBody());
 	}
 }
